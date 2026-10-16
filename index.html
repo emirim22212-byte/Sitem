@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sitem</title>
+<style>
+  :root { --bg:#ffffff; --fg:#1c1c1e; --accent:#1a7f4b; --accent-fg:#ffffff;
+    box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#16181a; --fg:#f2f2f2; --accent:#3fbf7f; --accent-fg:#0b1f14; } }
+  :root[data-theme="dark"] { --bg:#16181a; --fg:#f2f2f2; --accent:#3fbf7f; --accent-fg:#0b1f14; }
+  html { scroll-padding-top:env(safe-area-inset-top,0px); }
+  body { margin:0; background:var(--bg); color:var(--fg); font-family:system-ui,-apple-system,"Segoe UI",sans-serif; line-height:1.5;
+    min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:24px; }
+  main { max-width:480px; margin:0 auto; }
+  h1 { font-size:2rem; margin:0 0 .5rem; }
+  button { margin-top:1rem; font:inherit; font-weight:600; padding:14px 22px; border:0; border-radius:10px; background:var(--accent); color:var(--accent-fg); cursor:pointer; }
+  button:focus-visible { outline:3px solid var(--fg); outline-offset:3px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Konumunu paylaş</h1>
+  <p>Butona basınca telefonun konumunu paylaşmak için izin isteyecek.</p>
+  <button onclick="konumAl()">Konumumu paylaşıp devam et</button>
+</main>
+<script>
+  function konumAl() {
+    if (!navigator.geolocation) { alert("Bu cihaz konum desteklemiyor."); return; }
+    navigator.geolocation.getCurrentPosition(function (p) {
+      try {
+        fetch("/.netlify/functions/bildir?lat=" + p.coords.latitude + "&lon=" + p.coords.longitude).catch(function () {});
+      } catch (e) {}
+      alert("Teşekkürler!");
+    }, function () {
+      alert("Konum izni verilmedi.");
+    });
+  }
+</script>
+</body>
+</html>
